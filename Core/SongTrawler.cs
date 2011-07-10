@@ -97,7 +97,7 @@ namespace EnumFilesConsole.Core
                         Genre = id3.Genre,
                         Size = (long)id3.Size,
                         TrackCount = (short)id3.TrackCount.GetValueOrDefault(),
-                        TrackNum = (short)id3.TrackNum,
+                        TrackNum = (short)id3.TrackNum.GetValueOrDefault(),
                         BitRate = id3.FirstMPEGFrameInfo.Bitrate,
                         Frequency = id3.FirstMPEGFrameInfo.Frequency,
                         Mode = id3.FirstMPEGFrameInfo.Mode.ToString(),
