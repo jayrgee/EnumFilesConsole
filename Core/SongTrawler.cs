@@ -33,7 +33,7 @@ namespace EnumFilesConsole.Core
             foreach (var file in files)
             {
                 //Console.WriteLine("  file: {0}", Path.GetFileName(file));
-                var id3 = new UltraID3();
+                UltraID3 id3 = new UltraID3();
                 try
                 {
                     id3.Read(file);
@@ -53,10 +53,10 @@ namespace EnumFilesConsole.Core
                 //Console.WriteLine("{0} | {1} | {2} | {3}", id3.Artist, id3.Album, id3.Title, file);
 
                 //TODO: Log any handled errors in UltraID3 object
-                var id3Errors = id3.GetExceptions(ID3ExceptionLevels.Error);
+                ID3MetaDataException[] id3Errors = id3.GetExceptions(ID3ExceptionLevels.Error);
                 if (id3Errors.Length > 0)
                 {
-                    foreach (var id3Exception in id3Errors)
+                    foreach (ID3MetaDataException id3Exception in id3Errors)
                     {
                         LogSongMessage(new SongLog
                         {
@@ -68,10 +68,10 @@ namespace EnumFilesConsole.Core
                         });
                     }
                 }
-                var id3Warnings = id3.GetExceptions(ID3ExceptionLevels.Warning);
+                ID3MetaDataException[] id3Warnings = id3.GetExceptions(ID3ExceptionLevels.Warning);
                 if (id3Warnings.Length > 0)
                 {
-                    foreach (var id3Exception in id3Warnings)
+                    foreach (ID3MetaDataException id3Exception in id3Warnings)
                     {
                         LogSongMessage(new SongLog
                         {
@@ -84,6 +84,27 @@ namespace EnumFilesConsole.Core
                     }
                 }
 
+                //GetPictureData();
+                ID3FrameCollection pictureFrames = id3.ID3v2Tag.Frames.GetFrames(MultipleInstanceID3v2FrameTypes.ID3v22Picture);
+                if (pictureFrames.Count > 0)
+                {
+                    LogSongMessage(new SongLog
+                    {
+                        LogType = (byte)SongLogType.Information,
+                        Filename = Path.GetFileName(file),
+                        Filepath = file,
+                        Source = "GetSongs",
+                        Message = String.Format("picture count:{0}",pictureFrames.Count.ToString())
+                    });
+                    foreach (ID3v22PictureFrame picFrame in pictureFrames)
+                    {
+                        SavePicture(new SongPicture
+                        {
+                            Filepath = file,
+                            Picture = picFrame.Picture
+                        });
+                    }
+                }
 
                 // add to the database
                 using (var transaction = session.BeginTransaction())
@@ -123,7 +144,11 @@ namespace EnumFilesConsole.Core
         private static ISessionFactory CreateSessionFactory()
         {
             return Fluently.Configure()
-                .Database(MsSqlConfiguration.MsSql2008.ConnectionString(x => x.FromConnectionStringWithKey("SongData")).ShowSql())
+                .Database(MsSqlConfiguration.MsSql2008
+                    .ConnectionString(x => x
+                        .FromConnectionStringWithKey("SongData"))
+                        //.ShowSql()
+                        )
                 .Mappings(map =>
                     {
                         map.FluentMappings
@@ -141,6 +166,16 @@ namespace EnumFilesConsole.Core
             using (var transaction = session.BeginTransaction())
             {
                 session.Save(e);
+                transaction.Commit();
+            }
+        }
+        
+        private void SavePicture(SongPicture sp)
+        {
+            // add to the database
+            using (var transaction = session.BeginTransaction())
+            {
+                session.Save(sp);
                 transaction.Commit();
             }
         }

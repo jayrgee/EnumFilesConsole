@@ -56,3 +56,23 @@ CREATE TABLE [dbo].[SongLog](
 	CONSTRAINT [CK_SongLog_LogType] CHECK (LogType IN (0,1,2))
 ) ON [PRIMARY]
 GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SongPicture]') AND type in (N'U'))
+DROP TABLE [dbo].[SongPicture]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[SongPicture](
+	[SongPictureId] [int] IDENTITY(1,1) NOT NULL,
+	[Filepath] [nvarchar](1000) NOT NULL,
+	[Picture] [varbinary](max) NULL,
+	[CreatedBy] [nvarchar](100) NOT NULL CONSTRAINT DF_SongPicture_CreatedBy DEFAULT suser_sname(),
+	[CreatedDate] [datetime] NOT NULL CONSTRAINT DF_SongPicture_CreatedDate DEFAULT getdate(),
+	CONSTRAINT [PK_SongPicture] PRIMARY KEY CLUSTERED (SongPictureId),
+) ON [PRIMARY]
+GO

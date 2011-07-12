@@ -51,6 +51,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -64,8 +65,10 @@
     <Compile Include="Core\SongTrawler.cs" />
     <Compile Include="Entities\Song.cs" />
     <Compile Include="Entities\SongLog.cs" />
+    <Compile Include="Entities\SongPicture.cs" />
     <Compile Include="Mappings\SongLogMap.cs" />
     <Compile Include="Mappings\SongMap.cs" />
+    <Compile Include="Mappings\SongPictureMap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

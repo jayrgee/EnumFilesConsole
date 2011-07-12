@@ -1,3 +1,8 @@
+/*
+TRUNCATE TABLE dbo.Song
+TRUNCATE TABLE dbo.SongLog
+TRUNCATE TABLE dbo.SongPicture
+*/
 
 SELECT
 	[MinCreatedDate] = MIN(s.CreatedDate)
@@ -6,7 +11,9 @@ SELECT
 ,	[SongCount] = COUNT(*)
 ,	[ErrorCount] = (SELECT COUNT(*) FROM dbo.SongLog WHERE LogType=2)
 ,	[WarningCount] = (SELECT COUNT(*) FROM dbo.SongLog WHERE LogType=1)
+,	[InformationCount] = (SELECT COUNT(*) FROM dbo.SongLog WHERE LogType=0)
 FROM dbo.song s;
 
-SELECT * FROM dbo.SongLog ORDER BY LogType DESC, SongLogId;
-
+SELECT * FROM dbo.SongLog
+WHERE LogType = 0
+ORDER BY LogType DESC, SongLogId

@@ -1,4 +1,5 @@
-﻿namespace EnumFilesConsole.Entities
+﻿using System;
+namespace EnumFilesConsole.Entities
 {
     public class Song
     {
@@ -14,7 +15,7 @@
         public virtual short BitRate { get; set; }
         public virtual int Frequency { get; set; }
         public virtual string Mode { get; set; }
-        public virtual System.TimeSpan Duration { get; set; }
+        public virtual TimeSpan Duration { get; set; }
         public virtual string Filename { get; set; }
         public virtual string Filepath { get; set; }
     }
